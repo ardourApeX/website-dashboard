@@ -94,6 +94,23 @@ const extensionRequestsListUserSearch = {
     },
   ],
 };
+
+const extensionRequestsListUserSearch = {
+  message: 'Extension Requests returned successfully!',
+  allExtensionRequests: [
+    {
+      assignee: 'sunny',
+      id: 'lGQ3AjUlgNB6Jd8jXaEC',
+      newEndsOn: 1690528980,
+      oldEndsOn: 1689954609.948,
+      reason: 'test reason',
+      status: 'PENDING',
+      taskId: 'PYj79ki2agB0q5JN3kUf',
+      timestamp: 1691734400.045,
+      title: 'A title',
+    },
+  ],
+};
 const extensionRequestsListPending = {
   message: 'Extension Requests returned successfully!',
   allExtensionRequests: [
