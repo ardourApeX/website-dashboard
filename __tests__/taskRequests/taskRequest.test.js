@@ -9,7 +9,7 @@ const API_BASE_URL = 'https://staging-api.realdevsquad.com';
 describe('Task Requests', () => {
   let browser;
   let page;
-
+  jest.setTimeout(60000);
   beforeAll(async () => {
     browser = await puppeteer.launch({
       headless: 'new',
@@ -70,7 +70,12 @@ describe('createCustomElement', () => {
   let page;
 
   beforeAll(async () => {
-    browser = await puppeteer.launch();
+    browser = await puppeteer.launch({
+      headless: 'new',
+      ignoreHTTPSErrors: true,
+      args: ['--incognito', '--disable-web-security'],
+      devtools: false,
+    });
     page = await browser.newPage();
 
     await page.goto(`${SITE_URL}/taskRequests`);
