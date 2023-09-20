@@ -17,6 +17,9 @@ const tabs = document.querySelectorAll('.groups-tab div');
 const sections = document.querySelectorAll('.manage-groups, .create-group');
 const loader = document.querySelector('.backdrop');
 const userIsNotVerifiedText = document.querySelector('.not-verified-tag');
+let searchValue = window.location.search
+  ? window.location.search?.slice(1)
+  : '';
 const params = new URLSearchParams(window.location.search);
 const isDev = params.get(DEV_FEATURE_FLAG) === 'true';
 
@@ -77,10 +80,6 @@ groupsData?.forEach((item) => {
     item.rolename,
   );
 
-  if (params.has(formattedRoleName)) {
-    group.classList.add('active-group');
-  }
-
   const groupname = document.createElement('p');
   groupname.classList.add('group-name');
   groupname.setAttribute('id', `name-${item.roleid}`);
@@ -101,6 +100,9 @@ groupsData?.forEach((item) => {
   group.appendChild(createdBy);
   groupRoles.appendChild(group);
 });
+if (searchValue) {
+  searchAmongGroups(searchValue);
+}
 
 /**
  * FOR RENDERING TABS
@@ -128,6 +130,19 @@ function isRoleIdInData(data, targetRoleId) {
   // Use the some() method to check if any element in data.groups has a matching roleId
   return data.groups.some((group) => group.roleId === targetRoleId);
 }
+//Helper function to filter the list
+function searchAmongGroups(searchValue) {
+  const groupRoles = document.querySelectorAll('.group-role');
+  groupRoles.forEach((groupRole) => {
+    const paragraphElement = groupRole.getElementsByTagName('p')[0];
+    const paragraphContent = paragraphElement.textContent;
+    const displayValue =
+      paragraphContent.toUpperCase().indexOf(searchValue.toUpperCase()) > -1
+        ? ''
+        : 'none';
+    groupRole.style.display = displayValue;
+  });
+}
 
 /**
  * FOR SELECTING A GROUP
@@ -144,7 +159,7 @@ groupRoles?.addEventListener('click', function (event) {
     const devFeatureFlag = isDev ? '&dev=true' : '';
     const rolename = `${groupListItem.querySelector('p').textContent}`;
     const newURL = `${window.location.pathname}?${rolename}${devFeatureFlag}`;
-    window.history.pushState({}, '', newURL);
+    // window.history.pushState({}, '', newURL);
     groupListItem.classList.add('active-group');
     memberAddRoleBody.roleid = groupListItem.id;
     if (IsUserVerified) {
@@ -177,6 +192,9 @@ function updateButtonState() {
 }
 // const paragraphElement = null, paragraphContent = '';
 const searchInput = document.getElementById('search-groups');
+if (searchValue) {
+  searchInput.value = searchValue.toLowerCase();
+}
 
 function debounce(func, delay) {
   let timeoutId;
@@ -192,18 +210,12 @@ searchInput.addEventListener('keyup', () => {
   loader.classList.remove('hidden');
   debounce(() => {
     const searchValue = searchInput.value.toUpperCase();
-    const groupRoles = document.querySelectorAll('.group-role');
-    groupRoles.forEach((groupRole) => {
-      const paragraphElement = groupRole.getElementsByTagName('p')[0];
-      const paragraphContent = paragraphElement.textContent;
-      const displayValue =
-        paragraphContent.toUpperCase().indexOf(searchValue) > -1 ? '' : 'none';
-      groupRole.style.display = displayValue;
-      loader.classList.add('hidden');
-    });
+    //Updating the search query of URL
+    window.history.pushState(null, null, '?' + searchInput.value);
+    searchAmongGroups(searchValue);
+    loader.classList.add('hidden');
   }, 1000)();
 });
-
 /**
  * TO ASSIGN YOURSELF A ROLE
  */
