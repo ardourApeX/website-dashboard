@@ -18,7 +18,7 @@ const sections = document.querySelectorAll('.manage-groups, .create-group');
 const loader = document.querySelector('.backdrop');
 const userIsNotVerifiedText = document.querySelector('.not-verified-tag');
 let searchValue = window.location.search
-  ? window.location.search?.slice(1)
+  ? decodeURIComponent(window.location.search.slice(1))
   : '';
 const params = new URLSearchParams(window.location.search);
 const isDev = params.get(DEV_FEATURE_FLAG) === 'true';
